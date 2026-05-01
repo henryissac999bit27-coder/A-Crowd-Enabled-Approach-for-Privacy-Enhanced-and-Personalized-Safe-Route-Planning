@@ -5,7 +5,7 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import axios from 'axios';
 
-const API = 'http://localhost:5000';
+const API = 'https://safe-route-backend-byec.onrender.com';
 const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {

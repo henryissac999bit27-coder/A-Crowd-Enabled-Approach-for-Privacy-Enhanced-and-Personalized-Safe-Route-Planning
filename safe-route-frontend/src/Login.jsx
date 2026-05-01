@@ -3,7 +3,7 @@ import { useState } from 'react';
 import axios from 'axios';
 import { useAuth } from './AuthContext';
 
-const API = 'http://localhost:5000';
+const API = 'https://safe-route-backend-byec.onrender.com';
 
 function BackgroundElements() {
   return (

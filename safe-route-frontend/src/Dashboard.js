@@ -8,7 +8,7 @@ import { useAuth } from './AuthContext';
 import MapView from './MapView';
 import PerformanceAnalysis from './PerformanceAnalysis';
 
-const API = 'http://localhost:5000';
+const API = 'https://safe-route-backend-byec.onrender.com';
 
 // ── Traveller nav (no Analytics) ──────────────────────────────────────────────
 const NAV = [
