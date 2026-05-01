@@ -18,6 +18,9 @@ const {
     findFlexibleSafestRoute,
     findGroupSafestRoute,
     findGroupFlexibleSafestRoute,
+    naiveDirA,
+    naiveItA,
+    findSafestPath_GDirA_RDA,
 } = require('../utils/pathFinder');
 
 const { selectQueryGroup, aggregatePSS } = require('../services/crowdService');
@@ -105,6 +108,7 @@ async function buildResponse(path, stats, gridData, ratio, zVal, crowdStats, ext
             pssRevealed: stats?.pssRevealed ?? 0,
         },
         crowdStats,
+        rdaStats:  stats?.rdaStats || null,
         ...extra,
     };
 }
@@ -123,21 +127,50 @@ router.get('/', async (req, res) => {
         const start = { x: parseInt(startX), y: parseInt(startY) };
         const end   = { x: parseInt(endX),   y: parseInt(endY)   };
         const ratio = parseFloat(deltaRatio);
-        const algo  = algorithm === 'G_ItA' ? 'G_ItA' : 'G_DirA';
+        const validAlgos = ['G_DirA','G_ItA','N_DirA','N_ItA','G_DirA+RDA'];
+        const algo  = validAlgos.includes(algorithm) ? algorithm : 'G_DirA';
 
         const { gridData, crowdStats } = await loadGridData(userId, start, end, ratio);
         if (!gridData?.length) return res.status(503).json({ error: 'No safety data.' });
 
-        const result = findSafestPath(gridData, start, end, ratio, algo, parseInt(Xit));
-        const path   = result.path || result;
-        const stats  = result.stats || {};
+        let path, stats;
+
+        if (algo === 'N_DirA') {
+            const t0 = Date.now();
+            const naive = naiveDirA(gridData, [start], [end], ratio, parseInt(Xit));
+            const best  = naive.results.find(r => r.path && r.path.length > 0);
+            path  = best ? best.path : [];
+            stats = { algorithm: 'N_DirA', commFreq: naive.totalCommFreq,
+                      pssRevealed: naive.totalPssRevealed, runtimeMs: Date.now() - t0 };
+
+        } else if (algo === 'N_ItA') {
+            const t0 = Date.now();
+            const naive = naiveItA(gridData, [start], [end], ratio, parseInt(Xit));
+            const best  = naive.results.find(r => r.path && r.path.length > 0);
+            path  = best ? best.path : [];
+            stats = { algorithm: 'N_ItA', commFreq: naive.totalCommFreq,
+                      pssRevealed: naive.totalPssRevealed, runtimeMs: Date.now() - t0 };
+
+        } else if (algo === 'G_DirA+RDA') {
+            // G_DirA with Raindrop Algorithm replacing binary search in Step 4
+            // RDA 2025 — Scientific Reports Vol.15 Article 34211 (Oct 2025)
+            const t0     = Date.now();
+            const result = findSafestPath_GDirA_RDA(gridData, start, end, ratio);
+            path  = result.path || [];
+            stats = Object.assign({}, result.stats || {}, { runtimeMs: Date.now() - t0 });
+
+        } else {
+            const result = findSafestPath(gridData, start, end, ratio, algo, parseInt(Xit));
+            path  = result.path || result;
+            stats = result.stats || {};
+        }
 
         if (!path?.length)
-            return res.status(404).json({ error: `No SR route within δ=${ratio}. Try increasing deltaRatio.` });
+            return res.status(404).json({ error: `No SR route within delta=${ratio}. Try increasing deltaRatio.` });
 
         const resp = await buildResponse(path, stats, gridData, ratio, parseFloat(z), crowdStats, {
             queryType: 'SR',
-            message:   `SR: route found with ${path.length} steps.`,
+            message:   `${algo}: route found with ${path.length} steps.`,
         });
         res.json(resp);
     } catch (err) {
@@ -324,6 +357,101 @@ router.get('/gfsr', async (req, res) => {
         });
     } catch (err) {
         console.error('[GFSR]', err.message);
+        res.status(500).json({ error: err.message });
+    }
+});
+
+
+// GET /api/route/compare
+// Compares G_DirA vs N_DirA and G_ItA vs N_ItA for FSR/GSR
+// Used to generate paper-style comparison graphs (Figure 6,7,8,9)
+// Params: srcX, srcY, destX, destY (comma-separated), deltaRatio
+router.get('/compare', async function(req, res) {
+    try {
+        var sources      = parseCells(req.query.srcX,  req.query.srcY);
+        var destinations = parseCells(req.query.destX, req.query.destY);
+        var deltaRatio   = parseFloat(req.query.deltaRatio || 1.2);
+
+        if (sources.length === 0)      sources      = [{ x: parseInt(req.query.startX||4178), y: parseInt(req.query.startY||-8771) }];
+        if (destinations.length === 0) destinations = [{ x: parseInt(req.query.endX||4184),   y: parseInt(req.query.endY||-8764) }];
+
+        var rowsResult = await db.query('SELECT grid_x,grid_y,safety_score FROM safety_scores');
+        var gridData   = rowsResult[0];
+
+        var t0 = Date.now();
+        var gDirA = findSafestPath(gridData, sources[0], destinations[0], deltaRatio, 'G_DirA');
+        var tGDirA = Date.now() - t0;
+
+        t0 = Date.now();
+        var gDirARDA = findSafestPath_GDirA_RDA(gridData, sources[0], destinations[0], deltaRatio);
+        var tGDirARDA = Date.now() - t0;
+
+        t0 = Date.now();
+        var gItA  = findSafestPath(gridData, sources[0], destinations[0], deltaRatio, 'G_ItA');
+        var tGItA = Date.now() - t0;
+
+        t0 = Date.now();
+        var nDirA = naiveDirA(gridData, sources, destinations, deltaRatio);
+        var tNDirA = Date.now() - t0;
+
+        t0 = Date.now();
+        var nItA  = naiveItA(gridData, sources, destinations, deltaRatio);
+        var tNItA = Date.now() - t0;
+
+        var gDirAPath = gDirA.path || gDirA;
+        var gItAPath  = gItA.path  || gItA;
+        var gDirAStats = gDirA.stats || {};
+        var gItAStats  = gItA.stats  || {};
+
+        res.json({
+            comparison: {
+                G_DirA: {
+                    runtimeMs:   tGDirA,
+                    pathLength:  gDirAPath.length,
+                    commFreq:    gDirAStats.commFreq    || 1,
+                    pssRevealed: gDirAStats.pssRevealed || 0,
+                },
+                G_ItA: {
+                    runtimeMs:   tGItA,
+                    pathLength:  gItAPath.length,
+                    commFreq:    gItAStats.commFreq    || 1,
+                    pssRevealed: gItAStats.pssRevealed || 0,
+                },
+                N_DirA: {
+                    runtimeMs:   tNDirA,
+                    commFreq:    nDirA.totalCommFreq,
+                    pssRevealed: nDirA.totalPssRevealed,
+                    note:        nDirA.note,
+                },
+                'G_DirA+RDA': {
+                    runtimeMs:   tGDirARDA,
+                    pathLength:  (gDirARDA.path||[]).length,
+                    commFreq:    1,
+                    pssRevealed: (gDirARDA.stats||{}).pssRevealed || 0,
+                    rdaBestT:    (gDirARDA.stats||{}).rdaStats?.bestThreshold,
+                    rdaIters:    (gDirARDA.stats||{}).rdaStats?.iterations,
+                },
+                N_ItA: {
+                    runtimeMs:   tNItA,
+                    commFreq:    nItA.totalCommFreq,
+                    pssRevealed: nItA.totalPssRevealed,
+                    note:        nItA.note,
+                },
+            },
+            paperClaims: {
+                GDirA_vs_NDirA_speedup: 'G_DirA is 4-12x faster than N_DirA (paper Section 9.2.2)',
+                GItA_vs_NItA_commFreq:  'G_ItA reduces commFreq 88% vs N_ItA for FSR (paper Section 9.2.2)',
+                GItA_vs_GDirA_privacy:  'G_ItA reveals 43% fewer pSSs than G_DirA (paper abstract)',
+            },
+            yourResults: {
+                GDirA_vs_NDirA_speedup: nDirA.totalCommFreq > 0 ? (tNDirA / Math.max(tGDirA,1)).toFixed(1) + 'x' : 'N/A',
+                GItA_pssReduction: gDirAStats.pssRevealed > 0
+                    ? (100*(1 - gItAStats.pssRevealed/gDirAStats.pssRevealed)).toFixed(1) + '%'
+                    : 'N/A',
+            },
+        });
+    } catch (err) {
+        console.error('[compare]', err.message);
         res.status(500).json({ error: err.message });
     }
 });

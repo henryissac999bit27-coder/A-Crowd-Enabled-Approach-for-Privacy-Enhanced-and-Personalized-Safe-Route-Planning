@@ -1,0 +1,261 @@
+{
+  "exported_at": "2026-04-29T07:12:45.564938",
+  "global_model": {
+    "id": 1,
+    "w0": -6.87638,
+    "w1": -3.03058,
+    "w2": 2.43819,
+    "w3": 0.0,
+    "w4": -5.25083,
+    "round": 11,
+    "participants": 10,
+    "updated_at": "2026-04-29T07:12:45"
+  },
+  "user_models": [
+    {
+      "username": "user_frank",
+      "user_id": "46ddfc0f-bc14-4d54-a704-15da0d384ab2",
+      "w0": -7.33369,
+      "w1": -2.25123,
+      "w2": 2.66683,
+      "w3": 0.0,
+      "w4": -3.84525,
+      "loss": 2.32646,
+      "round": 11
+    },
+    {
+      "username": "user_iris",
+      "user_id": "f486318b-de52-408d-acba-7a9803e1f106",
+      "w0": -7.30405,
+      "w1": -1.68819,
+      "w2": 2.65203,
+      "w3": 0.0,
+      "w4": -4.32383,
+      "loss": 2.71083,
+      "round": 11
+    },
+    {
+      "username": "user_david",
+      "user_id": "32041014-da6e-4f06-8c27-c4ce2c888c15",
+      "w0": -7.16646,
+      "w1": -2.76182,
+      "w2": 2.58322,
+      "w3": 0.0,
+      "w4": -4.10762,
+      "loss": 3.00602,
+      "round": 11
+    },
+    {
+      "username": "user_alice",
+      "user_id": "18d69af8-b66f-449b-a628-c45f8318c561",
+      "w0": -7.14746,
+      "w1": -2.50096,
+      "w2": 2.57374,
+      "w3": 0.0,
+      "w4": -4.52097,
+      "loss": 3.20453,
+      "round": 11
+    },
+    {
+      "username": "user_carol",
+      "user_id": "9908dd77-532d-4521-a725-0f0896da6dfc",
+      "w0": -6.95484,
+      "w1": -2.6922,
+      "w2": 2.47742,
+      "w3": 0.0,
+      "w4": -5.04826,
+      "loss": 3.55484,
+      "round": 11
+    },
+    {
+      "username": "user_eva",
+      "user_id": "506bebf5-2a6d-4d6e-9a16-8d390a5b152f",
+      "w0": -6.66934,
+      "w1": -3.27935,
+      "w2": 2.33467,
+      "w3": 0.0,
+      "w4": -6.01797,
+      "loss": 3.64441,
+      "round": 11
+    },
+    {
+      "username": "user_henry",
+      "user_id": "7d7c4d00-fb14-444a-9b7b-ce70d5f6424a",
+      "w0": -6.53242,
+      "w1": -3.55212,
+      "w2": 2.26622,
+      "w3": 0.0,
+      "w4": -6.52445,
+      "loss": 3.66955,
+      "round": 11
+    },
+    {
+      "username": "user_grace",
+      "user_id": "d014d750-15ad-4d4a-b382-9e056bbb1567",
+      "w0": -6.6779,
+      "w1": -3.65896,
+      "w2": 2.33896,
+      "w3": 0.0,
+      "w4": -5.59824,
+      "loss": 4.34021,
+      "round": 11
+    },
+    {
+      "username": "user_james",
+      "user_id": "d43eb809-36b6-40db-86f2-1c9a99f6d2f8",
+      "w0": -6.61754,
+      "w1": -3.36811,
+      "w2": 2.30875,
+      "w3": 0.0,
+      "w4": -6.09247,
+      "loss": 4.47322,
+      "round": 11
+    },
+    {
+      "username": "user_bob",
+      "user_id": "87632cb1-27d5-4fa3-b799-8fb20aa2a555",
+      "w0": -6.52915,
+      "w1": -4.30963,
+      "w2": 2.26455,
+      "w3": 0.0,
+      "w4": -5.8308,
+      "loss": 4.88376,
+      "round": 11
+    }
+  ],
+  "round_history": [
+    {
+      "round": 1,
+      "participants": 10,
+      "avg_loss": 5.62349,
+      "global_w0": -7.4692,
+      "global_w1": -1.19726,
+      "global_w2": 2.7346,
+      "global_w3": 0.0,
+      "global_w4": -1.84614,
+      "created_at": "2026-04-14T22:40:18"
+    },
+    {
+      "round": 2,
+      "participants": 10,
+      "avg_loss": 4.07521,
+      "global_w0": -7.3352,
+      "global_w1": -1.71119,
+      "global_w2": 2.6676,
+      "global_w3": 0.0,
+      "global_w4": -2.74976,
+      "created_at": "2026-04-14T22:40:28"
+    },
+    {
+      "round": 3,
+      "participants": 10,
+      "avg_loss": 3.94163,
+      "global_w0": -7.15485,
+      "global_w1": -2.166,
+      "global_w2": 2.57742,
+      "global_w3": 0.0,
+      "global_w4": -3.59074,
+      "created_at": "2026-04-14T22:40:31"
+    },
+    {
+      "round": 4,
+      "participants": 10,
+      "avg_loss": 3.8147,
+      "global_w0": -7.07735,
+      "global_w1": -2.58981,
+      "global_w2": 2.53867,
+      "global_w3": 0.0,
+      "global_w4": -4.39466,
+      "created_at": "2026-04-14T22:40:32"
+    },
+    {
+      "round": 5,
+      "participants": 10,
+      "avg_loss": 3.71029,
+      "global_w0": -6.97466,
+      "global_w1": -2.97807,
+      "global_w2": 2.48733,
+      "global_w3": 0.0,
+      "global_w4": -5.14898,
+      "created_at": "2026-04-14T22:40:33"
+    },
+    {
+      "round": 6,
+      "participants": 10,
+      "avg_loss": 3.5915,
+      "global_w0": -6.87631,
+      "global_w1": -2.99725,
+      "global_w2": 2.43815,
+      "global_w3": 0.0,
+      "global_w4": -5.18596,
+      "created_at": "2026-04-15T07:21:41"
+    },
+    {
+      "round": 7,
+      "participants": 10,
+      "avg_loss": 3.58748,
+      "global_w0": -6.88335,
+      "global_w1": -3.00856,
+      "global_w2": 2.44167,
+      "global_w3": 0.0,
+      "global_w4": -5.20688,
+      "created_at": "2026-04-15T07:21:42"
+    },
+    {
+      "round": 8,
+      "participants": 10,
+      "avg_loss": 3.58569,
+      "global_w0": -6.88146,
+      "global_w1": -3.0145,
+      "global_w2": 2.44073,
+      "global_w3": 0.0,
+      "global_w4": -5.21874,
+      "created_at": "2026-04-16T02:35:14"
+    },
+    {
+      "round": 9,
+      "participants": 10,
+      "avg_loss": 3.58413,
+      "global_w0": -6.87967,
+      "global_w1": -3.02015,
+      "global_w2": 2.43983,
+      "global_w3": 0.0,
+      "global_w4": -5.23,
+      "created_at": "2026-04-16T02:35:14"
+    },
+    {
+      "round": 10,
+      "participants": 10,
+      "avg_loss": 3.58271,
+      "global_w0": -6.87799,
+      "global_w1": -3.0255,
+      "global_w2": 2.43899,
+      "global_w3": 0.0,
+      "global_w4": -5.24068,
+      "created_at": "2026-04-29T07:12:45"
+    },
+    {
+      "round": 11,
+      "participants": 10,
+      "avg_loss": 3.58138,
+      "global_w0": -6.87638,
+      "global_w1": -3.03058,
+      "global_w2": 2.43819,
+      "global_w3": 0.0,
+      "global_w4": -5.25083,
+      "created_at": "2026-04-29T07:12:45"
+    }
+  ],
+  "hyperparameters": {
+    "LOCAL_EPOCHS": 50,
+    "LEARNING_RATE": 0.01,
+    "LR_DECAY": 0.95,
+    "MOMENTUM": 0.9,
+    "EARLY_STOP_DELTA": 0.001,
+    "EARLY_STOP_ROUNDS": 5,
+    "CONVERGENCE_DELTA": 0.005,
+    "MIN_PARTICIPANTS": 2,
+    "DEFAULT_BETA": -2.0,
+    "S": 10
+  }
+}
